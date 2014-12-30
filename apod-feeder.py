@@ -3,6 +3,8 @@ import feedparser
 import os
 import re
 import time
+
+
 from datetime import datetime
 from feedformatter import Feed
 
@@ -65,6 +67,14 @@ def feed():
     response.mimetype = 'application/rss+xml'
     return response
 
+
+@app.route("/")
+def home():
+    raise Exception("Test Exception")
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Dumb hack to properly set debug state
+    debug = {'True': True, 'False': False}.get(os.environ.get("DEBUG", 'False'), False)
+    app.run(host='0.0.0.0', port=port, debug=debug)
