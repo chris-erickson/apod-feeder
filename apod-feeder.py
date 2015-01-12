@@ -52,7 +52,7 @@ def feed():
 
         # Get the date into a better format for feedformatter
         localized_date = central.localize(date)
-        tuple_time = time.strptime(localized_date.strftime("%a, %d %b %Y %H:%M:%S %Z"), "%a, %d %b %Y %H:%M:%S %Z")
+        tuple_time = time.strptime(localized_date.strftime("%a, %d %b %Y %H:%M:%S"), "%a, %d %b %Y %H:%M:%S")
 
         # Check for an image to provide a better one (APOD provides a small thumbnail only)
         # Grab the html of the current page
