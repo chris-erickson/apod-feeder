@@ -1,10 +1,11 @@
-import pytz
 import feedparser
 import os
 import re
+import requests
+import pytz
 import time
 
-
+from bs4 import BeautifulSoup
 from datetime import datetime
 from feedformatter import Feed
 
@@ -51,7 +52,22 @@ def feed():
 
         # Get the date into a better format for feedformatter
         localized_date = central.localize(date)
-        tuple_time = time.strptime(localized_date.strftime("%a, %d %b %Y %H:%M:%S"), "%a, %d %b %Y %H:%M:%S")
+        tuple_time = time.strptime(localized_date.strftime("%a, %d %b %Y %H:%M:%S %Z"), "%a, %d %b %Y %H:%M:%S %Z")
+
+        # Check for an image to provide a better one (APOD provides a small thumbnail only)
+        # Grab the html of the current page
+        linked_page = requests.get(link).text
+
+        # Locate an image (if there is one)
+        try:
+            soup = BeautifulSoup(linked_page)
+            img = soup.center.img['src']
+            if img:
+                feed_soup = BeautifulSoup(entry['summary'])
+                feed_soup.p.a.img['src'] = img
+                entry['summary'] = unicode(feed_soup)
+        except TypeError:
+            pass
 
         # Complete the feed item
         item["title"] = entry['title']
