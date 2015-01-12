@@ -61,6 +61,9 @@ def feed():
         # Locate an image (if there is one)
         try:
             soup = BeautifulSoup(linked_page)
+            for idx, child in enumerate(soup.body.children):
+                if idx == 5:
+                    body = unicode(child).split("<p> <center>")[0] + "</p>"
             img = soup.center.img['src']
             if img:
                 feed_soup = BeautifulSoup(entry['summary'])
@@ -72,7 +75,7 @@ def feed():
         # Complete the feed item
         item["title"] = entry['title']
         item["link"] = link
-        item["description"] = entry['summary'].replace(DAILY_LINK, link)
+        item["description"] = body
         item["pubDate"] = tuple_time
         item["guid"] = link
 
