@@ -66,14 +66,20 @@ def feed():
         # Locate an image (if there is one)
         try:
             soup = BeautifulSoup(linked_page)
+            # Loop through the children elements to get the <p> we need
             for idx, child in enumerate(soup.body.children):
                 if idx == 5:
+                    # The <p> tag with the text is the 5th element
+                    # Need to add a closing <p> since the source is missing it
                     body = unicode(child).split("<p> <center>")[0] + "</p>"
+            # Check for the main image source url
             img = soup.center.img['src']
             if img:
+                # An image exists, get the best formatted version
                 feed_soup = BeautifulSoup(entry['summary'])
-                feed_soup.p.a.img['src'] = img
-                entry['summary'] = unicode(feed_soup)
+                feed_soup.p.a.img['src'] = 'http://apod.nasa.gov/apod/' + img
+                # Prepend the right tag to the front of the desciption
+                body = unicode(feed_soup.p.a.img) + body
         except TypeError:
             pass
 
