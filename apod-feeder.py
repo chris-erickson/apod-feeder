@@ -56,7 +56,12 @@ def feed():
 
         # Check for an image to provide a better one (APOD provides a small thumbnail only)
         # Grab the html of the current page
-        linked_page = requests.get(link).text
+        r = requests.get(link)
+        linked_page = r.text
+
+        # Some feeds return 404 (put up too early?)
+        if r.status_code == 404:
+            continue
 
         # Locate an image (if there is one)
         try:
