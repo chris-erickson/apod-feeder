@@ -63,15 +63,18 @@ def feed():
         if r.status_code == 404:
             continue
 
+        body = u''
+
         # Locate an image (if there is one)
+        soup = BeautifulSoup(linked_page)
+        # Loop through the children elements to get the <p> we need
+        for idx, child in enumerate(soup.body.children):
+            if idx == 5:
+                # The <p> tag with the text is the 5th element
+                # Need to add a closing <p> since the source is missing it
+                body = unicode(child).split("<p> <center>")[0] + "</p>"
+
         try:
-            soup = BeautifulSoup(linked_page)
-            # Loop through the children elements to get the <p> we need
-            for idx, child in enumerate(soup.body.children):
-                if idx == 5:
-                    # The <p> tag with the text is the 5th element
-                    # Need to add a closing <p> since the source is missing it
-                    body = unicode(child).split("<p> <center>")[0] + "</p>"
             # Check for the main image source url
             img = soup.center.img['src']
             if img:
